@@ -16694,7 +16694,7 @@ const QUESTIONS_DATA = [
         isCorrect: true,
       },
     ],
-    manualPage: 84,
+    manualPage: 95,
   },
   {
     id: "W91M",
@@ -16718,7 +16718,7 @@ const QUESTIONS_DATA = [
         isCorrect: true,
       },
     ],
-    manualPage: 84,
+    manualPage: 95,
   },
   {
     id: "W92M",
@@ -16742,7 +16742,7 @@ const QUESTIONS_DATA = [
         isCorrect: false,
       },
     ],
-    manualPage: 84,
+    manualPage: 95,
   },
   {
     id: "W93M",
@@ -16763,7 +16763,7 @@ const QUESTIONS_DATA = [
         isCorrect: true,
       },
     ],
-    manualPage: 151,
+    manualPage: 95,
   },
   {
     id: "W94M",
