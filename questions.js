@@ -4878,7 +4878,7 @@ const QUESTIONS_DATA = [
         isCorrect: true,
       },
     ],
-    manualPage: 84,
+    manualPage: 40,
   },
   {
     id: "G12V",
