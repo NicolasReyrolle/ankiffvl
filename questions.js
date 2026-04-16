@@ -2816,7 +2816,7 @@ const QUESTIONS_DATA = [
     id: "E41M",
     text: "Vous recevez une rafale de vent arrière, cela provoque transitoirement :",
     explanation:
-      "Une rafale arrière diminue transitoirement la vitesse-air (moins de vent relatif), donc la Force Aérodynamique chute et l'incidence augmente. La vitesse-sol augmente. Danger de décrochage !",
+      "Une rafale arrière diminue transitoirement la vitesse-air (moins de vent relatif), donc la Force Aérodynamique chute et l'incidence augmente. La vitesse-sol augmente. Danger de décrochage ! En réaction, l'aile va piquer pour reprendre de la vitesse-air.",
     answers: [
       {
         text: "une diminution de la Force Aérodynamique",
@@ -12637,8 +12637,8 @@ const QUESTIONS_DATA = [
         isCorrect: true,
       },
     ],
-    manualPage: 100,
-    diagram: "convection",
+    manualPage: 179,
+    diagram: "nuages",
   },
   {
     id: "U10M",
