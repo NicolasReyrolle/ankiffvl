@@ -10763,6 +10763,7 @@ const QUESTIONS_DATA = [
       },
       { text: "possible dans les CTR", score: -6, isCorrect: false },
     ],
+    manualPage: 226,
   },
   {
     id: "S64M",
