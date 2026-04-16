@@ -15903,7 +15903,7 @@ const QUESTIONS_DATA = [
         isCorrect: true,
       },
     ],
-    manualPage: 104,
+    manualPage: 87,
   },
   {
     id: "W61V",
