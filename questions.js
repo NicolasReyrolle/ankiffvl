@@ -3554,7 +3554,7 @@ const QUESTIONS_DATA = [
     explanation:
       "Après un décrochage, l'aile pique (abattée) pour reprendre de la vitesse et revoler. Le pilote, en retard, effectue un rappel pendulaire. C'est un comportement normal, pas une erreur de pilotage.",
     answers: [
-      { text: "d'un rappel pendulaire pendulaire", score: 3, isCorrect: true },
+      { text: "d'un rappel pendulaire", score: 3, isCorrect: true },
       {
         text: "d'une prise de vitesse de l'aile qui cherche à revoler",
         score: 3,
