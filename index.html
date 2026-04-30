@@ -7,9 +7,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#1877f2">
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icon-192.svg">
-    <link rel="icon" type="image/svg+xml" href="icon-192.svg">
-    <title>QCM FFVL - Révisions</title>
+    <link rel="apple-touch-icon" href="logo_ankiffvl.png">
+    <link rel="icon" type="image/png" href="logo_ankiffvl.png">
+    <title>Anki FFVL - Révisions</title>
     <style>
         :root {
             --primary: #1877f2;
@@ -70,11 +70,15 @@
             padding: 20px;
             color: #1c1e21;
             transition: background-color 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .container {
             max-width: 680px;
-            margin: 0 auto;
+            width: 100%;
+            flex: 1;
         }
 
         .card {
@@ -387,6 +391,11 @@
             color: #c62828;
         }
 
+        .result-message.warning {
+            background: #fff8e1;
+            color: #e65100;
+        }
+
         /* Explanation box */
         .explanation-box {
             background: var(--primary-light);
@@ -545,9 +554,19 @@
         @media (max-width: 600px) {
             body {
                 padding: 0;
-                padding-top: 45px;
+                padding-top: 56px;
                 min-height: 100dvh;
                 background: var(--primary-bg);
+            }
+
+            .top-bar-pct-wrap {
+                flex-direction: row;
+                align-items: baseline;
+                gap: 4px;
+            }
+
+            .top-bar-today {
+                font-size: 0.58em;
             }
 
             .card {
@@ -643,11 +662,6 @@
             }
 
             /* Question mobile */
-            .question-header {
-                flex-direction: column;
-                gap: 8px;
-                align-items: flex-start;
-            }
 
             .question-text {
                 font-size: 1.05em;
@@ -1134,14 +1148,62 @@
             margin-top: 8px;
             font-style: italic;
         }
+
+        /* Mastery dots */
+        .mastery-dots { display:inline-flex; gap:3px; align-items:center; }
+        .mastery-dot { width:8px; height:8px; border-radius:50%; background:#ddd; flex-shrink:0; }
+
+        @keyframes dotIn {
+            0%   { transform: scale(0.2); opacity: 0.3; }
+            60%  { transform: scale(1.5); }
+            100% { transform: scale(1);   opacity: 1; }
+        }
+        @keyframes dotOut {
+            0%   { transform: scale(1); opacity: 1; }
+            100% { transform: scale(0.2); opacity: 0; }
+        }
+        .dot-anim-in  { animation: dotIn  0.35s ease forwards; }
+        .dot-anim-out { animation: dotOut 0.25s ease forwards; }
+
+        /* Top bar % label */
+        .top-bar-pct-wrap { display:flex; flex-direction:column; align-items:center; line-height:1.2; }
+        .top-bar-today { font-size:0.6em; font-weight:400; opacity:0.65; }
+
+        /* Rating buttons */
+        .rating-buttons { display:none; gap:8px; margin-top:12px; }
+        .rating-hard { background:#ffebee; color:#c62828; }
+        .rating-hard:hover { background:#ffcdd2; }
+        .rating-hard.active { background:#e53935; color:white; }
+        .rating-easy { background:#e8f5e9; color:#2e7d32; }
+        .rating-easy:hover { background:#c8e6c9; }
+        .rating-easy.active { background:#2e7d32; color:white; }
+
+        /* Mastery indicator with label */
+        .mastery-indicator { display:inline-flex; align-items:center; gap:4px; font-size:0.8em; color:#65676b; cursor:help; }
+        .mastery-label { font-weight:500; white-space:nowrap; }
+        .mastery-count { min-width:26px; text-align:right; font-variant-numeric:tabular-nums; }
+
+        /* Question counter */
+        .question-counter { font-size:0.8em; color:#65676b; white-space:nowrap; }
+
+        /* Exam gauge */
+        .exam-gauge { margin-bottom:20px; padding:14px; background:#f8f9fa; border-radius:8px; }
+        .exam-gauge-bar { background:#e4e6eb; border-radius:4px; height:8px; overflow:visible; margin:6px 0; position:relative; }
+        .exam-gauge-fill { height:100%; border-radius:4px; transition:width 0.5s ease; }
+        .exam-gauge-marker { position:absolute; top:-4px; bottom:-4px; width:2px; background:#2e7d32; border-radius:1px; left:75%; }
+
+        /* Theme filter */
+        .theme-filter-row { display:flex; gap:6px; flex-wrap:wrap; padding:4px 0 12px; }
+        .theme-btn { padding:5px 12px; border-radius:16px; border:1px solid #ccc; background:white; white-space:nowrap; font-size:0.82em; cursor:pointer; font-family:inherit; flex-shrink:0; transition:all 0.15s; }
+        .theme-btn.active { background:var(--primary); color:white; border-color:var(--primary); }
     </style>
     <script src="questions.js"></script>
 </head>
 <body>
     <!-- Top Bar (Score + Profile) -->
     <div id="topBar" class="top-bar hidden" onclick="showProfile()">
-        <div class="top-bar-score">
-            <span id="totalScore">0</span>%
+        <div class="top-bar-score" title="Précision du jour">
+            <div class="top-bar-pct-wrap"><span class="top-bar-pct"><span id="totalScore">0</span>%</span><span class="top-bar-today">aujourd'hui</span></div>
             <span class="streak" id="streakDisplay" title="Série en cours">0</span>
         </div>
         <div class="top-bar-user">
@@ -1153,7 +1215,7 @@
     <div class="container">
         <!-- Login Screen -->
         <div id="loginScreen" class="card">
-            <h1>QCM FFVL</h1>
+            <h1>Anki FFVL</h1>
             <p style="text-align: center; color: #666; margin-bottom: 20px;">
                 Révisez les questions du brevet de pilote parapente
             </p>
@@ -1170,7 +1232,8 @@
                 <p style="margin: 0; color: #555;">
                     <span style="color: #2e7d32;">●</span> <strong>Objectif 75%</strong> — seuil de réussite à l'examen (15/20)<br>
                     <span style="color: #1565c0;">●</span> Schémas explicatifs pour les concepts clés<br>
-                    <span style="color: #7b1fa2;">●</span> Fonctionne hors-ligne, progression sauvegardée
+                    <span style="color: #7b1fa2;">●</span> Fonctionne hors-ligne, progression sauvegardée<br>
+                    <span style="color: #e65100;">●</span> Score FFVL : <strong>+6</strong> par bonne réponse, <strong>−6</strong> par erreur (système officiel de points FFVL)
                 </p>
             </div>
 
@@ -1193,7 +1256,7 @@
         <!-- Dashboard -->
         <div id="dashboard" class="card hidden">
             <div class="dashboard-header">
-                <h1>QCM FFVL</h1>
+                <h1>Anki FFVL</h1>
                 <span id="levelBadge" class="level-badge"></span>
             </div>
 
@@ -1228,26 +1291,17 @@
                 </div>
             </div>
 
+            <div id="themeFilter" class="theme-filter-row"></div>
+
             <div class="filter-tabs">
                 <button class="filter-tab active" data-filter="due" onclick="setFilter('due')">À réviser</button>
                 <button class="filter-tab" data-filter="new" onclick="setFilter('new')">Nouvelles</button>
+                <button class="filter-tab" data-filter="hard" onclick="setFilter('hard')">⚠ Difficiles</button>
                 <button class="filter-tab" data-filter="all" onclick="setFilter('all')">Toutes</button>
             </div>
 
             <div class="buttons">
                 <button class="btn btn-primary" onclick="startSession()">Commencer la session</button>
-                <button class="btn btn-secondary" onclick="resetProgress()">Réinitialiser</button>
-            </div>
-
-            <div class="test-question" style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #eee;">
-                <div style="display: flex; gap: 8px; align-items: center; justify-content: center;">
-                    <input type="text" id="testQuestionId" placeholder="ID (ex: A94B)"
-                           onkeypress="if(event.key==='Enter')testQuestion()"
-                           style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; width: 120px; font-size: 14px;">
-                    <button class="btn btn-secondary" onclick="testQuestion()" style="padding: 8px 16px;">
-                        Tester
-                    </button>
-                </div>
             </div>
         </div>
 
@@ -1275,6 +1329,11 @@
                 <button class="btn btn-primary" onclick="nextQuestion()">Question suivante</button>
                 <button class="btn btn-secondary" onclick="backToDashboard()">Retour au tableau de bord</button>
             </div>
+
+            <div class="rating-buttons" id="ratingButtons">
+                <button id="btnDifficile" class="btn rating-hard" onclick="overrideLevel(1)">😕 Difficile</button>
+                <button id="btnApprise" class="btn rating-easy" onclick="overrideLevel(8)">✓ Apprise</button>
+            </div>
         </div>
 
         <!-- No Questions Screen -->
@@ -1288,6 +1347,10 @@
                 <button class="btn btn-primary" style="margin-top: 20px;" onclick="backToDashboard()">Retour</button>
             </div>
         </div>
+        <footer style="margin-top: 8px; padding: 16px 0 24px; text-align: center; font-size: 0.8em; color: #999; border-top: 1px solid #e4e6eb;">
+            avec &lt;3 par <a href="https://github.com/reynadan" style="color: #999;">Daniel Reynaud</a> 2025.
+            <a href="https://creativecommons.org/licenses/by/3.0/" style="color: #999;">Licence CC 3.0</a> Internet c'est le partage.
+        </footer>
     </div>
 
     <script>
@@ -1321,6 +1384,7 @@
         let currentLevel = 'V';
         let userProgress = {};
         let currentFilter = 'due';
+        let currentTheme = null;
         let currentQuestionIndex = -1;
         let filteredQuestions = [];
         let answered = false;
@@ -1332,7 +1396,9 @@
             bestStreak: 0,
             totalCorrect: 0,
             totalAnswered: 0,
-            history: [] // [{date, score, correct, total}]
+            totalPoints: 0,
+            totalMaxPoints: 0,
+            history: [] // [{date, correct, total, points, maxPoints}]
         };
 
         const BREVET_NAMES = {
@@ -1341,6 +1407,12 @@
             'M': 'Brevet Confirmé',
             'T': 'Qualification Treuil',
             'ALL': 'Toutes'
+        };
+
+        const THEME_LABELS = {
+            'A': 'Météo', 'E': 'Mécavol', 'F': 'Facteurs humains',
+            'G': 'Aérodynamique', 'L': 'Matériel', 'N': 'Structure aile',
+            'P': 'Sites & Nature', 'S': 'Réglementation', 'U': 'Situations', 'W': 'Pratique'
         };
 
         // URL du Manuel du Vol Libre FFVL (PDF)
@@ -1454,6 +1526,7 @@
             const level = document.getElementById('levelSelect').value;
             currentUser = username;
             currentLevel = level;
+            currentTheme = null;
             localStorage.setItem('ankiffvl_user', username);
             localStorage.setItem('ankiffvl_level', level);
             applyTheme(level);
@@ -1500,9 +1573,14 @@
                     bestStreak: 0,
                     totalCorrect: 0,
                     totalAnswered: 0,
+                    totalPoints: 0,
+                    totalMaxPoints: 0,
                     history: []
                 };
             }
+            // Backward compat: add missing fields
+            if (userStats.totalPoints === undefined) userStats.totalPoints = 0;
+            if (userStats.totalMaxPoints === undefined) userStats.totalMaxPoints = 0;
             updateScoreDisplay();
         }
 
@@ -1513,7 +1591,11 @@
         function getTodayPercentage() {
             const today = new Date().toISOString().split('T')[0];
             const todayEntry = userStats.history.find(h => h.date === today);
-            if (todayEntry && todayEntry.total > 0) {
+            if (!todayEntry) return 0;
+            if (todayEntry.maxPoints > 0) {
+                return Math.round((todayEntry.points / todayEntry.maxPoints) * 100);
+            }
+            if (todayEntry.total > 0) {
                 return Math.round((todayEntry.correct / todayEntry.total) * 100);
             }
             return 0;
@@ -1527,8 +1609,10 @@
             document.getElementById('topBar').classList.remove('hidden');
         }
 
-        function addScore(correct) {
+        function addScore(correct, earnedPoints, maxPoints) {
             userStats.totalAnswered++;
+            userStats.totalPoints += earnedPoints;
+            userStats.totalMaxPoints += maxPoints;
 
             if (correct) {
                 userStats.totalCorrect++;
@@ -1554,11 +1638,15 @@
             if (todayEntry) {
                 todayEntry.correct += correct ? 1 : 0;
                 todayEntry.total++;
+                todayEntry.points = (todayEntry.points || 0) + earnedPoints;
+                todayEntry.maxPoints = (todayEntry.maxPoints || 0) + maxPoints;
             } else {
                 userStats.history.push({
                     date: today,
                     correct: correct ? 1 : 0,
-                    total: 1
+                    total: 1,
+                    points: earnedPoints,
+                    maxPoints: maxPoints
                 });
             }
 
@@ -1577,10 +1665,15 @@
                 userProgress[questionId] = {
                     level: 0,
                     nextReview: 0,
-                    lastReview: 0
+                    lastReview: 0,
+                    failCount: 0,
+                    hard: false
                 };
             }
-            return userProgress[questionId];
+            const p = userProgress[questionId];
+            if (p.failCount === undefined) p.failCount = 0;
+            if (p.hard === undefined) p.hard = false;
+            return p;
         }
 
         // Mettre à jour le progrès après une réponse
@@ -1594,6 +1687,7 @@
             } else {
                 // Redescendre au niveau 1
                 progress.level = 1;
+                progress.failCount++;
             }
 
             progress.lastReview = now;
@@ -1608,9 +1702,12 @@
             let newCount = 0;
             let learned = 0;
             let inProgress = 0;
+            let hard = 0;
 
             for (const q of questions) {
                 const progress = getQuestionProgress(q.id);
+                const isHard = (progress.hard || progress.failCount >= 2) && progress.level < INTERVALS.length - 1;
+                if (isHard) hard++;
 
                 if (progress.level === 0) {
                     newCount++;
@@ -1624,7 +1721,7 @@
                 }
             }
 
-            return { due, new: newCount, learned, inProgress, total: questions.length };
+            return { due, new: newCount, learned, inProgress, hard, total: questions.length };
         }
 
         // Mélanger un tableau (Fisher-Yates)
@@ -1650,12 +1747,14 @@
                                progress.level === 0;
                     case 'new':
                         return progress.level === 0;
+                    case 'hard':
+                        return (progress.hard || progress.failCount >= 2) && progress.level < INTERVALS.length - 1;
                     case 'all':
                         return true;
                     default:
                         return true;
                 }
-            });
+            }).filter(q => !currentTheme || q.id.startsWith(currentTheme));
 
             // Séparer les questions à réviser (urgentes) des nouvelles
             const dueQuestions = filtered.filter(q => {
@@ -1688,6 +1787,16 @@
             badge.textContent = BREVET_NAMES[currentLevel];
             badge.className = 'level-badge ' + currentLevel;
 
+            // Construire le filtre de thèmes
+            const usedPrefixes = [...new Set(questions.map(q => q.id[0]))].sort();
+            let themeHtml = '<button class="theme-btn' + (!currentTheme ? ' active' : '') + '" data-theme="" onclick="setTheme(\'\')">Tous</button>';
+            for (const p of usedPrefixes) {
+                if (THEME_LABELS[p]) {
+                    themeHtml += '<button class="theme-btn' + (currentTheme === p ? ' active' : '') + '" data-theme="' + p + '" onclick="setTheme(\'' + p + '\')">' + THEME_LABELS[p] + '</button>';
+                }
+            }
+            document.getElementById('themeFilter').innerHTML = themeHtml;
+
             updateStats();
         }
 
@@ -1697,6 +1806,8 @@
             document.getElementById('newCount').textContent = stats.new;
             document.getElementById('learnedCount').textContent = stats.learned;
             document.getElementById('totalCount').textContent = stats.total;
+            const hardTab = document.querySelector('.filter-tab[data-filter="hard"]');
+            if (hardTab) hardTab.textContent = stats.hard > 0 ? `⚠ Difficiles (${stats.hard})` : '⚠ Difficiles';
 
             // Barre de progression multi-segments
             const learnedPct = stats.total > 0 ? Math.round((stats.learned / stats.total) * 100) : 0;
@@ -1738,6 +1849,10 @@
                 return;
             }
 
+            // Fermer le modal si ouvert
+            const modal = document.querySelector('.stats-modal');
+            if (modal) modal.remove();
+
             // Charger cette question seule
             filteredQuestions = [question];
             currentQuestionIndex = 0;
@@ -1758,7 +1873,7 @@
             document.getElementById('noQuestionsScreen').classList.add('hidden');
 
             document.getElementById('questionId').textContent = question.id;
-            document.getElementById('questionLevel').textContent = LEVEL_NAMES[progress.level];
+            document.getElementById('questionLevel').innerHTML = getMasteryDots(progress.level);
             document.getElementById('questionText').textContent = question.text;
 
             // Mélanger les réponses
@@ -1800,6 +1915,9 @@
             document.getElementById('explanationBox').classList.add('hidden');
             document.getElementById('questionButtons').classList.remove('hidden');
             document.getElementById('nextButtons').classList.add('hidden');
+            document.getElementById('ratingButtons').style.display = 'none';
+            document.getElementById('btnDifficile').classList.remove('active');
+            document.getElementById('btnApprise').classList.remove('active');
             document.getElementById('validateBtn').disabled = false;
         }
 
@@ -1849,12 +1967,18 @@
 
             // Afficher le résultat
             const resultDiv = document.getElementById('resultMessage');
-            resultDiv.classList.remove('hidden', 'success', 'error');
+            resultDiv.classList.remove('hidden', 'success', 'error', 'warning');
+
+            const hasWrongSelection = document.querySelectorAll('#answersContainer .answer.incorrect').length > 0;
+            const isPartial = !isCorrect && totalScore > 0;
 
             if (isCorrect) {
                 resultDiv.classList.add('success');
-                resultDiv.textContent = 'Correct ! La question sera revue plus tard.';
+                resultDiv.textContent = 'Correct !';
                 showSuccessAnimation();
+            } else if (isPartial && !hasWrongSelection) {
+                resultDiv.classList.add('warning');
+                resultDiv.textContent = `Incomplet — ${totalScore}/${maxPossibleScore} points. Toutes les bonnes réponses n'ont pas été cochées.`;
             } else {
                 resultDiv.classList.add('error');
                 resultDiv.textContent = 'Incorrect. Cette question sera reproposée bientôt.';
@@ -1866,8 +1990,11 @@
             }
 
             // Mettre à jour le progrès et le score
+            const oldLevel = getQuestionProgress(question.id).level;
             updateProgress(question.id, isCorrect);
-            addScore(isCorrect);
+            const newLevel = getQuestionProgress(question.id).level;
+            addScore(isCorrect, Math.max(0, totalScore), maxPossibleScore);
+            animateMasteryDots(oldLevel, newLevel);
 
             // Générer l'explication
             showExplanation(question, isCorrect);
@@ -1875,6 +2002,11 @@
             // Changer les boutons
             document.getElementById('questionButtons').classList.add('hidden');
             document.getElementById('nextButtons').classList.remove('hidden');
+
+            // Afficher les boutons de notation manuelle
+            const prog = getQuestionProgress(question.id);
+            document.getElementById('ratingButtons').style.display = 'flex';
+            document.getElementById('btnApprise').classList.toggle('active', prog.level >= INTERVALS.length - 1);
         }
 
         // Animation de succès
@@ -1943,7 +2075,8 @@
                 const diagram = DIAGRAMS[question.diagram];
                 html += '<div class="diagram-container">';
                 if (diagram.img) {
-                    html += '<img src="' + diagram.img + '" alt="' + diagram.title + '" style="max-width:100%; border-radius:8px;">';
+                    html += '<img src="' + diagram.img + '" alt="' + diagram.title + '" style="max-width:100%; border-radius:8px; display:none;" onload="this.style.display=\'block\'; this.nextElementSibling.style.display=\'none\';" onerror="this.nextElementSibling.innerHTML=\'📐 Schéma non disponible (hors-ligne ou lien cassé)\'; this.remove();">';
+                    html += '<div style="padding:14px; background:#f5f6f7; border-radius:8px; display:flex; align-items:center; justify-content:center; gap:8px; color:#999; font-size:0.85em; min-height:64px;">⏳ Chargement du schéma…</div>';
                 } else if (diagram.svg) {
                     html += diagram.svg;
                 }
@@ -1963,21 +2096,10 @@
             }
 
             // Référence au Manuel du Vol Libre
-            if (question.manualPage) {
-                html += '<div class="tip" style="margin-top: 10px; background: #fff3cd; border-left: 4px solid #ffc107;">';
-                html += '<strong>📖 Pour approfondir :</strong> ';
-                html += '<a href="' + MANUAL_URL + '#page=' + question.manualPage + '" target="_blank" style="color: #856404;">';
-                html += 'Manuel du Vol Libre, page ' + question.manualPage;
-                html += '</a>';
-                html += '</div>';
-            }
 
-            // Conseil si erreur
-            if (!wasCorrect) {
-                html += '<div class="tip" style="margin-top: 10px;">';
-                html += 'Cette question vous sera reproposée prochainement.';
-                html += '</div>';
-            }
+
+
+
 
             explanationBox.innerHTML = html;
             explanationBox.classList.remove('hidden');
@@ -1996,24 +2118,123 @@
             showDashboard();
         }
 
+        function getMasteryDots(level) {
+            const total = 8;
+            const filled = Math.min(level, total);
+            const isLearned = level >= total;
+            const color = isLearned ? '#2e7d32' : 'var(--primary)';
+            const tooltip = filled + '/8 bonnes réponses consécutives — il en faut 8 pour maîtriser cette question';
+            let html = '<span class="mastery-indicator" title="' + tooltip + '">';
+            html += '<span class="mastery-label">Maîtrise</span>';
+            html += '<span class="mastery-dots">';
+            for (let i = 0; i < total; i++) {
+                const style = i < filled ? ' style="background:' + color + '"' : '';
+                html += '<span class="mastery-dot' + (i < filled ? ' filled' : '') + '"' + style + '></span>';
+            }
+            html += '</span>';
+            html += '<span class="mastery-count">' + filled + '/8</span>';
+            html += '</span>';
+            return html;
+        }
+
+        function animateMasteryDots(oldLevel, newLevel) {
+            const el = document.getElementById('questionLevel');
+            const total = 8;
+            const isLearned = newLevel >= total;
+            const color = isLearned ? '#2e7d32' : 'var(--primary)';
+
+            // Render at oldLevel first (instant)
+            el.innerHTML = getMasteryDots(oldLevel);
+            const dots = el.querySelectorAll('.mastery-dot');
+
+            if (newLevel > oldLevel) {
+                // Fill in dots from oldLevel to newLevel-1
+                for (let i = oldLevel; i < Math.min(newLevel, total); i++) {
+                    const dot = dots[i];
+                    if (!dot) continue;
+                    const delay = (i - oldLevel) * 120;
+                    setTimeout(() => {
+                        dot.style.background = color;
+                        dot.classList.add('filled', 'dot-anim-in');
+                        setTimeout(() => dot.classList.remove('dot-anim-in'), 400);
+                    }, delay);
+                }
+            } else if (newLevel < oldLevel) {
+                // Empty dots from oldLevel-1 down to newLevel
+                for (let i = Math.min(oldLevel, total) - 1; i >= newLevel; i--) {
+                    const dot = dots[i];
+                    if (!dot) continue;
+                    const delay = (Math.min(oldLevel, total) - 1 - i) * 80;
+                    setTimeout(() => {
+                        dot.classList.add('dot-anim-out');
+                        setTimeout(() => {
+                            dot.classList.remove('filled', 'dot-anim-out');
+                            dot.style.background = '';
+                        }, 270);
+                    }, delay);
+                }
+            }
+        }
+
+        function overrideLevel(newLevel) {
+            if (currentQuestionIndex < 0 || currentQuestionIndex >= filteredQuestions.length) return;
+            const qid = filteredQuestions[currentQuestionIndex].id;
+            const progress = getQuestionProgress(qid);
+            const oldLevel = progress.level;
+            progress.level = newLevel;
+            progress.nextReview = newLevel >= INTERVALS.length - 1
+                ? Date.now() + INTERVALS[INTERVALS.length - 1]
+                : Date.now() + (INTERVALS[newLevel] || 0);
+            progress.lastReview = Date.now();
+            if (newLevel <= 1) {
+                progress.hard = true;
+            } else if (newLevel >= INTERVALS.length - 1) {
+                progress.hard = false;
+                progress.failCount = 0;
+            }
+            userProgress[qid] = progress;
+            saveUserProgress();
+            animateMasteryDots(oldLevel, newLevel);
+            document.getElementById('btnDifficile').classList.toggle('active', newLevel <= 1);
+            document.getElementById('btnApprise').classList.toggle('active', newLevel >= INTERVALS.length - 1);
+        }
+
+        function setTheme(prefix) {
+            currentTheme = prefix || null;
+            document.querySelectorAll('.theme-btn').forEach(b =>
+                b.classList.toggle('active', b.dataset.theme === (prefix || '')));
+        }
+
         function resetProgress() {
-            if (confirm('Êtes-vous sûr de vouloir réinitialiser votre progression ?')) {
+            if (confirm('Réinitialiser toute votre progression ? Cette action est irréversible.')) {
                 userProgress = {};
                 saveUserProgress();
-                updateStats();
+                const modal = document.querySelector('.stats-modal');
+                if (modal) modal.remove();
+                showDashboard();
             }
         }
 
         // Afficher le profil et les statistiques
         function showProfile() {
-            const accuracy = userStats.totalAnswered > 0
-                ? Math.round((userStats.totalCorrect / userStats.totalAnswered) * 100)
-                : 0;
+            const accuracy = userStats.totalMaxPoints > 0
+                ? Math.round((userStats.totalPoints / userStats.totalMaxPoints) * 100)
+                : (userStats.totalAnswered > 0 ? Math.round((userStats.totalCorrect / userStats.totalAnswered) * 100) : 0);
 
             const todayPct = getTodayPercentage();
             const today = new Date().toISOString().split('T')[0];
             const todayEntry = userStats.history.find(h => h.date === today);
             const todayTotal = todayEntry ? todayEntry.total : 0;
+            const todayPtsLabel = todayEntry && todayEntry.maxPoints > 0
+                ? `${todayEntry.points}/${todayEntry.maxPoints} pts`
+                : `${todayTotal} Q`;
+
+            const gaugeWidth = Math.min(accuracy, 100);
+            const gaugeColor = accuracy >= 75 ? '#4caf50' : (accuracy >= 50 ? '#ff9800' : '#ef5350');
+            const examStatusText = accuracy >= 75
+                ? '✓ Niveau suffisant pour l\'examen'
+                : `${75 - accuracy} point(s) de plus pour atteindre l'objectif`;
+            const examStatusColor = accuracy >= 75 ? '#2e7d32' : '#e65100';
 
             const modal = document.createElement('div');
             modal.className = 'stats-modal';
@@ -2039,7 +2260,7 @@
                     <div class="stats-summary">
                         <div class="stats-item" style="${todayPct >= 75 ? 'background: #e8f5e9;' : ''}">
                             <div class="value" style="${todayPct >= 75 ? 'color: #2e7d32;' : ''}">${todayPct}%</div>
-                            <div class="label">Aujourd'hui (${todayTotal} Q)</div>
+                            <div class="label">Aujourd'hui (${todayPtsLabel})</div>
                         </div>
                         <div class="stats-item">
                             <div class="value">${userStats.bestStreak}</div>
@@ -2049,6 +2270,18 @@
                             <div class="value">${accuracy}%</div>
                             <div class="label">Global</div>
                         </div>
+                    </div>
+
+                    <div class="exam-gauge">
+                        <div style="display:flex; justify-content:space-between; font-size:0.85em; color:#666; margin-bottom:4px;">
+                            <span>Prêt pour l'examen ?</span>
+                            <span>${accuracy}% / 75% requis</span>
+                        </div>
+                        <div class="exam-gauge-bar">
+                            <div class="exam-gauge-fill" style="width:${gaugeWidth}%; background:${gaugeColor};"></div>
+                            <div class="exam-gauge-marker"></div>
+                        </div>
+                        <div style="font-size:0.82em; margin-top:4px; text-align:center; color:${examStatusColor};">${examStatusText}</div>
                     </div>
 
                     <div class="stats-graph">
@@ -2077,12 +2310,17 @@
                         <div class="history-list">
                             ${userStats.history.length > 0
                                 ? userStats.history.slice().reverse().slice(0, 7).map(h => {
-                                    const pct = h.total > 0 ? Math.round((h.correct / h.total) * 100) : 0;
+                                    const pct = h.maxPoints > 0
+                                        ? Math.round((h.points / h.maxPoints) * 100)
+                                        : (h.total > 0 ? Math.round((h.correct / h.total) * 100) : 0);
                                     const isPass = pct >= 75;
+                                    const detail = h.maxPoints > 0
+                                        ? `${h.points}/${h.maxPoints} pts`
+                                        : `${h.correct}/${h.total} Q`;
                                     return `
                                     <div class="history-item">
                                         <span class="history-date">${formatDate(h.date)}</span>
-                                        <span>${h.correct}/${h.total} réponses</span>
+                                        <span>${detail}</span>
                                         <span class="history-score" style="${isPass ? 'color: #2e7d32;' : ''}">${pct}%${isPass ? ' ✓' : ''}</span>
                                     </div>
                                 `}).join('')
@@ -2098,6 +2336,17 @@
                         <button class="btn btn-secondary" onclick="logout()" style="width: 100%;">
                             Déconnexion
                         </button>
+                        <div style="border-top:1px solid #e4e6eb; margin-top:12px; padding-top:12px;">
+                            <div style="display:flex; gap:8px; align-items:center; margin-bottom:8px;">
+                                <input type="text" id="testQuestionId" placeholder="Aller à une question (ex: A94B)"
+                                    onkeypress="if(event.key==='Enter')testQuestion()"
+                                    style="padding:8px 12px; border:1px solid #ddd; border-radius:6px; flex:1; font-size:14px; font-family:inherit;">
+                                <button class="btn btn-secondary" onclick="testQuestion()" style="padding:8px 14px; white-space:nowrap;">Aller</button>
+                            </div>
+                            <button class="btn btn-secondary" onclick="resetProgress()" style="width:100%; background:#ffebee; color:#c62828;">
+                                ⚠ Réinitialiser ma progression
+                            </button>
+                        </div>
                     </div>
                 </div>
             `;
@@ -2135,7 +2384,10 @@
             const height = canvas.height - padding.top - padding.bottom;
 
             // Calculer les pourcentages journaliers
-            const percentages = data.map(d => d.total > 0 ? Math.round((d.correct / d.total) * 100) : 0);
+            const percentages = data.map(d => {
+                if (d.maxPoints > 0) return Math.round((d.points / d.maxPoints) * 100);
+                return d.total > 0 ? Math.round((d.correct / d.total) * 100) : 0;
+            });
 
             // Échelle fixe de 0 à 100%
             const minPct = 0;

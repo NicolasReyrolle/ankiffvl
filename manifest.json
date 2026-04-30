@@ -1,6 +1,6 @@
 {
-  "name": "QCM FFVL - Révisions",
-  "short_name": "QCM FFVL",
+  "name": "Anki FFVL - Révisions",
+  "short_name": "Anki FFVL",
   "description": "Application de révision des questions du QCM FFVL avec répétition espacée",
   "start_url": "./index.html",
   "display": "standalone",
@@ -9,15 +9,15 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "icon-192.svg",
+      "src": "logo_ankiffvl.png",
       "sizes": "192x192",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "icon-192.svg",
+      "src": "logo_ankiffvl.png",
       "sizes": "512x512",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any maskable"
     }
   ]
