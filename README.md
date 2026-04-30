@@ -1,5 +1,9 @@
 # AnkiFFVL - Révisions QCM FFVL
 
+<p align="center">
+   <a href="https://reynadan.github.io/ankiffvl/">Pour s'entrainer c'est par là » ANKIFFVL</a>
+</p>
+  
 Application de révision des questions du QCM de la Fédération Française de Vol Libre (FFVL) utilisant la méthode de répétition espacée (style Anki).
 
 ## Fonctionnalités
